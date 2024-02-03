@@ -8,3 +8,6 @@ Lab 02: Continue Set-Up
 
 
 [![Releases](https://img.shields.io/github/release/DarryanM/sem/all.svg?style=flat-square)](https://github.com/DarryanM/sem/releases)
+
+# Software Engineering Methods
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/DarryanM/sem/main.yml?branch=master)
