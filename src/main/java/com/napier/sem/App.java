@@ -12,9 +12,9 @@ public class App
         // Connect to database
         a.connect();
         // Get Employee
-        Employee emp = a.getEmployee(255530);
+        Employee emp = a.getEmployeeSalaries("Engineer");
         // Display results
-        a.displayEmployee(emp);
+        a.displaySalaryByRole(emp);
 
         // Disconnect from database
         a.disconnect();
@@ -85,7 +85,7 @@ public class App
             }
         }
 
-    public Employee getEmployee(int ID)
+    public Employee getEmployeeSalaries(String title)
     {
         try
         {
@@ -93,34 +93,29 @@ public class App
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "select e.emp_no, e.first_name, e.last_name, t.title, dt.dept_no, "
-                            + "(select emp_no from dept_manager where dept_no = dt.dept_no and to_date='9999-01-01') as ManagerID,"
-                            + "(select dept_name from departments where dept_no = dt.dept_no) as dept_name, "
-                            + "(select salary from salaries where emp_no = 255530 and to_date='9999-01-01') as salary,"
-                            + "(Select concat(first_name, ' ' ,last_name) from employees where emp_no = ManagerID) as manager "
-                            + "From employees as e "
-                            + "inner join titles as t on e.emp_no = t.emp_no "
-                            + "inner join dept_emp as dm on e.emp_no = dm.emp_no "
-                            + "inner join departments as dt on dm.dept_no = dt.dept_no "
-                            + "WHERE e.emp_no = " + ID;
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
+                            + "FROM employees, salaries, titles "
+                            + "WHERE employees.emp_no = salaries.emp_no "
+                            + "AND employees.emp_no = titles.emp_no "
+                            + "AND salaries.to_date = '9999-01-01'"
+                            + "AND titles.to_date = '9999-01-01' "
+                            + "AND titles.title = '" + title + "' "
+                            + " ORDER BY employees.emp_no ASC Limit 10";
+
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
-            // Return new employee if valid.
+            // Return employees if valid.
             // Check one is returned
-            if (rset.next())
+            while (rset.next())
             {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
                 emp.last_name = rset.getString("last_name");
-                emp.manager = rset.getString("manager");
-                emp.title = rset.getString("title");
-                emp.dept_name = rset.getString("dept_name");
                 emp.salary = rset.getInt("salary");
                 return emp;
             }
-            else
-                return null;
+
         }
         catch (Exception e)
         {
@@ -128,20 +123,18 @@ public class App
             System.out.println("Failed to get employee details");
             return null;
         }
+        return null;
     }
 
-    public void displayEmployee(Employee emp)
+    public void displaySalaryByRole(Employee emp)
     {
         if (emp != null)
         {
             System.out.println(
                     emp.emp_no + " "
                             + emp.first_name + " "
-                            + emp.last_name + "\n"
-                            + emp.title + "\n"
-                            + "Salary:" + emp.salary + "\n"
-                            + emp.dept_name + "\n"
-                            + "Manager: " + emp.manager + "\n");
+                            + emp.last_name + " "
+                            + emp.salary + "\n");
         }
     }
 }
