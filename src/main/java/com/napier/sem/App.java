@@ -9,7 +9,7 @@ public class App
         // Create new Application
         App a = new App();
 
-        // Connect to database
+        // Connect to database1
         a.connect();
         // Get Employee
         Employee emp = a.getEmployee(255530);
