@@ -264,9 +264,11 @@ public class App {
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "select dept_no "
-                            + "From departments "
-                            + "WHERE departments.dept_name = '"+ dept_name +"'" ;
+                    "select d.dept_no, dm.emp_no, concat(e.first_name,' ', e.last_name) as manager "
+                            + "From departments as d "
+                            + "inner join dept_manager as dm on d.dept_no = dm.dept_no "
+                            + "inner join employees as e on dm.emp_no = e.emp_no "
+                            + "WHERE dm.to_date = '9999-01-01' AND d.dept_name = '"+ dept_name +"'" ;
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new Department Number if valid.
@@ -274,6 +276,7 @@ public class App {
             if (rset.next()) {
                 Department dep = new Department();
                 dep.dept_no = rset.getString("dept_no");
+                //dep.manager = rset.getString("manager");
                 return dep;
             } else
                 return null;
@@ -286,7 +289,7 @@ public class App {
 
     public void displayDepartmentNo(Department dep) {
         if (dep != null) {
-            System.out.println(dep.dept_no);
+            System.out.println(dep.dept_no + " " + dep.manager);
 
         }
     }
@@ -303,7 +306,7 @@ public class App {
                             + "AND employees.emp_no = dept_emp.emp_no "
                             + "AND dept_emp.dept_no = departments.dept_no "
                             + "AND salaries.to_date = '9999-01-01' "
-                            + "AND departments.dept_no = '" + dept.dept_no +"' "
+                            + "AND departments.dept_no = '" + dept.dept_no+"' "
                             + " ORDER BY employees.emp_no ASC Limit 10";
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
