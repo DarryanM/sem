@@ -102,20 +102,21 @@ public class App {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "select e.emp_no, e.first_name, e.last_name, t.title, dt.dept_no, "
-                            + "(select emp_no from dept_manager where dept_no = dt.dept_no and to_date='9999-01-01') as ManagerID,"
-                            + "(select dept_name from departments where dept_no = dt.dept_no) as dept_name, "
-                            + "(select salary from salaries where emp_no = "+ ID +" and to_date='9999-01-01') as salary,"
-                            + "(Select concat(first_name, ' ' ,last_name) from employees where emp_no = ManagerID) as manager "
-                            + "From employees as e "
-                            + "inner join titles as t on e.emp_no = t.emp_no "
-                            + "inner join dept_emp as dm on e.emp_no = dm.emp_no "
-                            + "inner join departments as dt on dm.dept_no = dt.dept_no "
-                            + "WHERE e.emp_no = " + ID;
+                // Create string for SQL statement
+                String strSelect =
+                        "select e.emp_no, e.first_name, e.last_name, t.title, dt.dept_no, "
+                                + "(select emp_no from dept_manager where dept_no = dt.dept_no and to_date='9999-01-01') as ManagerID,"
+                                + "(select dept_name from departments where dept_no = dt.dept_no) as dept_name, "
+                                + "(select salary from salaries where emp_no = " + ID + " and to_date='9999-01-01') as salary,"
+                                + "(Select concat(first_name, ' ' ,last_name) from employees where emp_no = ManagerID) as manager "
+                                + "From employees as e "
+                                + "inner join titles as t on e.emp_no = t.emp_no "
+                                + "inner join dept_emp as dm on e.emp_no = dm.emp_no "
+                                + "inner join departments as dt on dm.dept_no = dt.dept_no "
+                                + "WHERE e.emp_no = " + ID;
+
             // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
+                ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
             // Check one is returned
             if (rset.next()) {
@@ -190,11 +191,21 @@ public class App {
      *
      * @param employees The list of employees to print.
      */
-    public void printSalaries(ArrayList<Employee> employees) {
+    public void printSalaries(ArrayList<Employee> employees)
+    {
+        // Check employees is not null
+        if (employees == null)
+        {
+            System.out.println("No employees");
+            return;
+        }
         // Print header
         System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
         // Loop over all employees in the list
-        for (Employee emp : employees) {
+        for (Employee emp : employees)
+        {
+            if (emp == null)
+                continue;
             String emp_string =
                     String.format("%-10s %-15s %-20s %-8s",
                             emp.emp_no, emp.first_name, emp.last_name, emp.salary);
@@ -248,9 +259,16 @@ public class App {
      */
     public void printSalariesByRole(ArrayList<Employee> employees1) {
         // Print header
+        if (employees1 == null)
+        {
+            System.out.println("No employees");
+            return;
+        }
         System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
         // Loop over all employees in the list
         for (Employee emp : employees1) {
+            if (emp == null)
+                continue;
             String emp_string =
                     String.format("%-10s %-15s %-20s %-8s",
                             emp.emp_no, emp.first_name, emp.last_name, emp.salary);
@@ -335,9 +353,16 @@ public class App {
      */
     public void printSalariesByDepartment(ArrayList<Employee> employees3) {
         // Print header
+        if (employees3 == null)
+        {
+            System.out.println("No Data To Display");
+            return;
+        }
         System.out.println(String.format("%-10s %-15s %-20s %8s", "Emp No", "First Name", "Last Name", "Salary"));
         // Loop over all employees in the list
         for (Employee emp : employees3) {
+            if (emp == null)
+                continue;
             String emp_string =
                     String.format("%-10s %-15s %-20s %8s",
                             emp.emp_no, emp.first_name, emp.last_name, emp.salary);
